@@ -1,3 +1,21 @@
+#container {
+	/*margin-left: 50px;*/
+}
+svg {
+	/*padding: 20px 10px 50px 20px;*/
+	background-color: pink;
+}
 .tile:hover {
-  fill: red;
+  fill: #E0EEEE;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
 }
