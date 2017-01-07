@@ -47,6 +47,18 @@ svg = d3.select("#container")
     .attr("transform", "translate(" + margin.left + "," + margin.top +")");
 /*svg is as per old w and h. For rest, w and h has changed 
 so they all appear with a nice margin on all sides*/
+
+var widthScale = d3.scale.linear()
+        .domain(yearRange)
+        .range([0, w]);
+            /*coz shifted bar chart from 0 to (i+10) * (w-padding) / gdp.length;*/
+
+var heightScale = d3.scale.linear()
+        .domain([0,gdpRange[1]])
+        .range([h,0]);
+console.log(heightScale(18,000));
+
+
 var rect = svg.selectAll("rect")
    .data(gdp)
    .enter()
@@ -56,11 +68,15 @@ var rect = svg.selectAll("rect")
    		return i * w / gdp.length;
    })
    .attr("y", function(d) {
-   		return h - d/45;
+   		/*return h - d/45;*/
+      /*return 0;*/
+      return heightScale(d);
    })
    .attr("width", w / gdp.length - barPadding)
    .attr("height", function(d) {
-   		return d/45;
+   		/*return d/45;*/
+      /*return heightScale(d);*/
+      return h - heightScale(d);
    })
          .attr("fill", "teal");
       var label = svg.selectAll("text")
@@ -71,6 +87,12 @@ var rect = svg.selectAll("rect")
          	console.log(d);
 d3.select(this).select("text").style("visibility", "visible") 
 });*/
+
+
+
+/*x.domain(data.map(function(d) { return d.date; }));
+y.domain([0, d3.max(data, function(d) { return d.value; })]);*/
+
 rect.on("mouseover", function(d){tooltip.text(d); 
   return tooltip.style("visibility", "visible");})
       .on("mousemove", function(){
@@ -81,23 +103,18 @@ rect.on("mouseover", function(d){tooltip.text(d);
 
 
 
-    var widthScale = d3.scale.linear()
-                       .domain(yearRange)
-                      .range([0, w]);
-            /*coz shifted bar chart from 0 to (i+10) * (w-padding) / gdp.length;*/
+    
       var xAxis = d3.svg.axis()
           .scale(widthScale)
           .orient("bottom").ticks(10);
 
 
-    var heightScale = d3.scale.linear()
-        .domain([0,gdpRange[1]])
-        .range([h,0]);
-
     var yAxis = d3.svg.axis()
                   .scale(heightScale)
                   .orient("left")
                   /*.ticks(5);*/
+
+
 
     svg.append("g")
        .attr("class","axis")
