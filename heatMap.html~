@@ -7,6 +7,6 @@
         <link rel="stylesheet" type="text/css" href="css/barchart.css">
     <body>
       <div id="container"><div>
-      <script src="js/barchart.js"></script>
+      <script src="js/heatMap.js"></script>
     </body>
 </html>   
