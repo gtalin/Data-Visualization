@@ -1,5 +1,5 @@
 d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json", function(json) {
-  var data = json.monthlyVariance;
+ var data = json.monthlyVariance;
   var baseTemp = json.baseTemperature;
   console.log(json);
   
@@ -53,7 +53,7 @@ function drawGraph(data,baseTemp) {
       .attr("width",w + margin.left + margin.right)
       .attr("height",h + margin.top + margin.bottom)
       .attr("transform", "translate(" + margin.left + "," + margin.top +")")
-  .attr("class","container");
+      .attr("class","container");
   
   var tiles = grid.selectAll("rect")
                   .data(data);
@@ -90,16 +90,96 @@ function drawGraph(data,baseTemp) {
   
   var legend = grid.selectAll(".legend")
               .data([0].concat(colorScale.quantiles()), function(d) { return d; });
+              //.data(colorScale.quantiles(), function(d) { return d; });
 
           legend.enter().append("g")
               .attr("class", "legend");
 
           legend.append("rect")
             .attr("x", function(d, i) { return gridHeight * i; })
-            .attr("y", h+20)
+            .attr("y", h+40)
             .attr("width", gridHeight)
             .attr("height", gridWidth*4)
             .style("fill", function(d, i) { return colors[i]; });
+
+          legend.append("text")
+            .text(function(d) { if (d==0) return 0.0;
+              else return (baseTemp+d).toFixed(1); })
+            .attr("x", function(d, i) { return gridHeight * i; })
+            .attr("y", h + 80);
+
+          //legend.exit().remove();
+
+  var titleText = ["Monthly Global Land-Surface Temperature",
+       "1753 - 2015", "Temperatures are in Celsius and reported as anomalies relative to the Jan 1951-Dec 1980 average.",
+"Estimated Jan 1951-Dec 1980 absolute temperature "+"&deg;C"+": 8.66 +/- 0.07"];
+  
+  /*var titleT = "<tspan dx='10' dy='-60'>Monthly Global Land-Surface Temperature</tspan>";
+  titleT+="<tspan dy='-50'>1753 - 2015</tspan> <tspan dy='20'>Temperatures are in Celsius and reported as anomalies relative to the Jan 1951-Dec 1980 average.</tspan>";
+titleT+="<tspan>Estimated Jan 1951-Dec 1980 absolute temperature "+"&deg;C"+": 8.66 +/- 0.07</tspan>";*/
+  
+  /*grid.append("svg:title")
+      .text(titleText);
+  grid.append("text")
+      .attr("x", w/3)
+      .attr("y", -20)
+      .attr("text-anchor", "middle")
+      .style("font-size", "16px") 
+      //.style("text-decoration", "underline")  
+      .html(titleText);*/
+
+  /*grid.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  grid.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+      */
+
+   grid.append("text")
+      .attr("class", "title")
+      .attr("x", w/3)
+      .attr("y", -60)
+      .attr("text-anchor", "middle")
+      .html(titleText[0]);
+
+  grid.append("text")
+      .attr("class", "title")
+      .attr("x", w/3)
+      .attr("y", -40)
+      .attr("text-anchor", "middle")
+      .html(titleText[1]);
+grid.append("text")
+      .attr("class", "title")
+      .attr("x", w/3)
+      .attr("y", -30)
+      .attr("text-anchor", "middle")
+      .style("font-size", "10px") 
+      .html(titleText[2]);
+grid.append("text")
+      .attr("class", "title")
+      .attr("x", w/3)
+      .attr("y", -20)
+      .attr("text-anchor", "middle")
+      .style("font-size", "10px") 
+      .html(titleText[3]);
+
+
+   /*grid.append("div")
+      .style("position", "absolute")
+      .style("z-index", "5")
+      .style("background", "grey")
+      .style("color", "white")
+      .style("text-align", "center")
+      .style("padding", "5px")
+      .style("border-radius", "5px")
+      .style("text", "bold")
+      .text("a simple tooltip")
+      .style("top", -50+"px")
+      .style("left", 200+"px");
+     */ 
 
 }
 

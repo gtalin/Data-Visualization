@@ -97,8 +97,8 @@ function drawGraph(data,baseTemp) {
           legend.append("rect")
             .attr("x", function(d, i) { return gridHeight * i; })
             .attr("y", h+20)
-            .attr("width", gridHeight/2)
-            .attr("height", gridWidth)
+            .attr("width", gridHeight)
+            .attr("height", gridWidth*4)
             .style("fill", function(d, i) { return colors[i]; });
 
 }
