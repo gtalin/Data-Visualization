@@ -3,16 +3,12 @@
         <meta charset="utf-8">
         <title>D3 Test</title>
         <!--<script type="text/javascript" src="d3/d3.v4.min.js"></script>-->
-        <script src="https://d3js.org/d3.v3.js"></script>
-        <!--<link rel="stylesheet" type="text/css" href="css/heatMap.css">-->
 <style type="text/css">
-			* {
-                         font-family: sans-serif;
-                        }
+			
 			.axis path,
 			.axis line {
 				fill: none;
-				stroke: grey;
+				stroke: black;
 				shape-rendering: crispEdges;
 			}
 			
@@ -21,9 +17,11 @@
 				font-size: 11px;
 			}
 
-		</style>  
+		</style>
+        <script src="https://d3js.org/d3.v3.js"></script>
+        <link rel="stylesheet" type="text/css" href="css/barchart.css">
     <body>
       <div id="container"><div>
-      <script src="js/heatMap.js"></script>
+      <script src="js/barchart.js"></script>
     </body>
 </html>   

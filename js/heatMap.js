@@ -9,7 +9,7 @@ d3.json("https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/mas
 
 
 function drawGraph(data,baseTemp) {
-  var margin = {top: 80, right: 30, bottom: 80, left: 50};
+  var margin = {top: 80, right: 30, bottom: 80, left: 130};
   var w = 1300;
   var h = 700;
   var w = w - margin.right - margin.left;
@@ -18,11 +18,15 @@ function drawGraph(data,baseTemp) {
   var colors = ["#bd0026","#f03b20","#fd8d3c","#feb24c","#fed976","#ffffb2","#c7e9b4","#7fcdbb","#41b6c4","#2c7fb8","#253494"];
   colors = colors.reverse()
   var buckets = 11;//there will be 9 distinct colors. WIll help in colorScale. WHich in turn helps mapping colors values
-  var days = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   var baseYear = data[0].year
   var maxYear = data[data.length-1].year;
   var yearRange = maxYear-baseYear;
-  var gridWidth = Math.floor(w/yearRange);
+  //var gridWidth = Math.floor(w/yearRange);
+  //var gridHeight = Math.floor(h/12);//12 months
+  var gridWidth = w/yearRange;
+  //if we do Math.floor X-axis exceeds the 
+  //whole width covered by grids
   var gridHeight = Math.floor(h/12);//12 months
   var legendElementWidth = 10;
   var height=5;
@@ -103,83 +107,88 @@ function drawGraph(data,baseTemp) {
             .style("fill", function(d, i) { return colors[i]; });
 
           legend.append("text")
-            .text(function(d) { if (d==0) return 0.0;
-              else return (baseTemp+d).toFixed(1); })
+            .html(function(d) { if (d==0) return " &#8805 0.0";
+              else return "&#8805 " + (baseTemp+d).toFixed(1); })
             .attr("x", function(d, i) { return gridHeight * i; })
-            .attr("y", h + 80);
+            .attr("y", h + 80)
+            .attr("fill", "grey")
+            .attr("font-size","12")
 
           //legend.exit().remove();
 
-  var titleText = ["Monthly Global Land-Surface Temperature",
-       "1753 - 2015", "Temperatures are in Celsius and reported as anomalies relative to the Jan 1951-Dec 1980 average.",
-"Estimated Jan 1951-Dec 1980 absolute temperature "+"&deg;C"+": 8.66 +/- 0.07"];
   
-  /*var titleT = "<tspan dx='10' dy='-60'>Monthly Global Land-Surface Temperature</tspan>";
-  titleT+="<tspan dy='-50'>1753 - 2015</tspan> <tspan dy='20'>Temperatures are in Celsius and reported as anomalies relative to the Jan 1951-Dec 1980 average.</tspan>";
-titleT+="<tspan>Estimated Jan 1951-Dec 1980 absolute temperature "+"&deg;C"+": 8.66 +/- 0.07</tspan>";*/
   
-  /*grid.append("svg:title")
-      .text(titleText);
-  grid.append("text")
-      .attr("x", w/3)
-      .attr("y", -20)
-      .attr("text-anchor", "middle")
-      .style("font-size", "16px") 
-      //.style("text-decoration", "underline")  
-      .html(titleText);*/
-
-  /*grid.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+  
+  console.log("data", data);
+  
+  var xScale = d3.scale.linear()
+      .domain([baseYear,maxYear])
+      .range([0,w]);
+  var xAxis = d3.svg.axis()
+                 .scale(xScale)
+                 .orient("bottom")
+                 .ticks(10);
 
   grid.append("g")
-      .attr("class", "y axis")
-      .call(yAxis);
-      */
+      .attr("class", "axis")
+      .attr("transform", "translate(0," + (h) + ")")
+      .call(xAxis);
 
-   grid.append("text")
-      .attr("class", "title")
-      .attr("x", w/3)
-      .attr("y", -60)
-      .attr("text-anchor", "middle")
-      .html(titleText[0]);
 
-  grid.append("text")
-      .attr("class", "title")
-      .attr("x", w/3)
-      .attr("y", -40)
+//for Y labels
+//data is of length 3143 thus if we use this data below
+  //months will keep repeating as also the years
+//for x-axis
+
+  grid.selectAll(".labelY")
+      .data(months)
+      .enter()
+      .append("text")
+      .attr("x",-30)
+      .attr("y", function(d,i) {return i*gridHeight+gridHeight/2})
+      .text(function(d,i){return d})
       .attr("text-anchor", "middle")
-      .html(titleText[1]);
+      .attr("text-align", "right")
+      .attr("fill", "grey");
+
+//for title
+var titleText = ["Monthly Global Land-Surface Temperature",
+       "1753 - 2015", 
+       "Temperatures are in Celsius and reported as anomalies relative to the Jan 1951-Dec 1980 average.",
+"Estimated Jan 1951-Dec 1980 absolute temperature "+"&deg;C"+": 8.66 +/- 0.07"];
+var titlePlacement = -80
+//can create one array and then use enter to create several text
+//becuase 1 text can be poistioned in diff rows only by foreignObject
+//but that doesn't arrange data like we want
+grid.selectAll(".title")
+    .data(titleText)
+    .enter()
+    .append("text")
+    .attr("x", w/2)
+    .attr("y", function(d,i) {
+      //titlePlacement gets incremented
+      titlePlacement = (i>=0 && i<=1) ? titlePlacement+20 : titlePlacement+15;
+      return titlePlacement;
+    })
+    .attr("fill", "grey")//for font color
+    .attr("font-size", function(d,i) {
+      return (i>=0 && i<=1) ? "20px" : "10px"
+    })
+    .html(function(d){return d})
+    .attr("text-anchor", "middle")
+
 grid.append("text")
-      .attr("class", "title")
-      .attr("x", w/3)
-      .attr("y", -30)
-      .attr("text-anchor", "middle")
-      .style("font-size", "10px") 
-      .html(titleText[2]);
+    .text("Years")
+    .attr("x", w/2)
+    .attr("y", h+50)
+    .attr("stroke", "grey")
+
 grid.append("text")
-      .attr("class", "title")
-      .attr("x", w/3)
-      .attr("y", -20)
-      .attr("text-anchor", "middle")
-      .style("font-size", "10px") 
-      .html(titleText[3]);
-
-
-   /*grid.append("div")
-      .style("position", "absolute")
-      .style("z-index", "5")
-      .style("background", "grey")
-      .style("color", "white")
-      .style("text-align", "center")
-      .style("padding", "5px")
-      .style("border-radius", "5px")
-      .style("text", "bold")
-      .text("a simple tooltip")
-      .style("top", -50+"px")
-      .style("left", 200+"px");
-     */ 
+    .text("Months")
+    .attr("x", -110)
+    .attr("y", h/2)
+    .attr("stroke", "grey")
+    //.attr("transform", "translate(-220,10) rotate(-30)")
 
 }
 
